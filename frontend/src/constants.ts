@@ -4,7 +4,7 @@
 
 // API Configuration
 export const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000',
+  baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL || '/api',
   timeout: 30000, // 30 seconds
   cacheDuration: 5 * 60 * 1000, // 5 minutes
 } as const;
