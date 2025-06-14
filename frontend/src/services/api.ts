@@ -1,7 +1,20 @@
 // --- API Service: Handles all backend API calls for the CastingFit App ---
 
-// Use environment variable for backend URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api` : (() => { throw new Error('NEXT_PUBLIC_BACKEND_URL is not set in environment variables'); })();
+// Use environment variable for backend URL, default to '/api', and always resolve as absolute path from current domain
+function getApiBaseUrl() {
+  let base = process.env.NEXT_PUBLIC_BACKEND_URL || '/api';
+  // If base is relative, prepend window.location.origin (browser) or '' (SSR fallback)
+  if (base.startsWith('/')) {
+    if (typeof window !== 'undefined' && window.location) {
+      return window.location.origin + base;
+    }
+    // SSR fallback: use empty string, so fetch('/api/...') still works
+    return base;
+  }
+  return base;
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Cache implementation
 const cache = new Map<string, { data: unknown; timestamp: number }>();
