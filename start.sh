@@ -9,6 +9,42 @@
 #Clear console output to show server status
 
 #!/bin/bash
+cd "$(dirname "$0")"
+
+# Prefer Python 3.11, fallback to python3.10, else error
+if command -v python3.11 &> /dev/null; then
+  PYTHON_BIN="python3.11"
+elif command -v python3.10 &> /dev/null; then
+  PYTHON_BIN="python3.10"
+else
+  echo "ERROR: Python 3.11 or 3.10 is required. Please install it and try again."
+  exit 1
+fi
+
+# Remove old venv if it was created with the wrong Python version
+if [ -d "venv" ]; then
+  VENV_PYTHON=$(venv/bin/python3 --version 2>/dev/null)
+  if [[ "$VENV_PYTHON" != *"3.11"* && "$VENV_PYTHON" != *"3.10"* ]]; then
+    echo "Removing old virtual environment created with $VENV_PYTHON"
+    rm -rf venv
+  fi
+fi
+
+# Create venv if it doesn't exist
+if [ ! -d "venv" ]; then
+  $PYTHON_BIN -m venv venv
+fi
+
+# Activate venv
+source venv/bin/activate
+
+# Install dependencies
+pip install --upgrade pip
+pip install -r api/requirements.txt
+
+# Change to api directory and run the app
+cd api
+uvicorn index:app --reload --port 5000
 
 # Colors for output
 RED='\033[0;31m'
@@ -69,7 +105,7 @@ setup_python_env() {
     # Create virtual environment if it doesn't exist
     if [ ! -d "venv" ]; then
         log "Creating virtual environment..."
-        python3 -m venv venv
+        $PYTHON_BIN -m venv venv
     fi
 
     # Activate virtual environment
@@ -113,7 +149,7 @@ setup_python_env() {
 
         for dep_pair in "${deps[@]}"; do
             IFS=':' read -r dep import_name <<< "$dep_pair"
-            if ! python3 -c "import ${import_name}" 2>/dev/null; then
+            if ! $PYTHON_BIN -c "import ${import_name}" 2>/dev/null; then
                 missing_deps+=("$dep")
             fi
         done
@@ -151,7 +187,7 @@ start_backend() {
     # Set PYTHONPATH to include the project root
     export PYTHONPATH="$(cd .. && pwd):${PYTHONPATH}"
     # Start backend and show output on console while also writing to log file
-    python3 -m uvicorn app:app --host 0.0.0.0 --port 5000 2>&1 | tee ../logs/backend.log &
+    $PYTHON_BIN -m uvicorn app:app --host 0.0.0.0 --port 5000 2>&1 | tee ../logs/backend.log &
     BACKEND_PID=$!
     cd ..
     

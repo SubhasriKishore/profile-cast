@@ -8,6 +8,9 @@ import sys
 from modules.ai_castingfit.castingfit_service import CastingFitService
 from modules.profile_cast_aid.profile_service import ProfileService
 from config import Config
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # Setup logging
 logging.basicConfig(
@@ -40,6 +43,11 @@ TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 CastingFit_service = CastingFitService(VAPI_API_KEY)
 profile_service = ProfileService(TAVILY_API_KEY)
 
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Input validation models
 class ProfileRequest(BaseModel):
     requirements: str = Field(..., min_length=10, max_length=1000)
@@ -49,6 +57,7 @@ class TextToSpeechRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=1000)
 
 @app.post("/api/parse-profile")
+@limiter.limit("10/minute")
 async def parse_profile(request: Request, requirements: str = Form(...), file: UploadFile = File(...)):
     """Parse and analyze a candidate's profile."""
     try:
@@ -58,6 +67,7 @@ async def parse_profile(request: Request, requirements: str = Form(...), file: U
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/speech-to-text")
+@limiter.limit("30/minute")
 async def speech_to_text_vapi(request: Request, file: UploadFile = File(...)):
     """Convert speech to text using VAPI."""
     try:
@@ -67,6 +77,7 @@ async def speech_to_text_vapi(request: Request, file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/text-to-speech")
+@limiter.limit("30/minute")
 async def text_to_speech_vapi(request: Request, text_request: TextToSpeechRequest):
     """Convert text to speech using VAPI."""
     try:
@@ -76,6 +87,7 @@ async def text_to_speech_vapi(request: Request, text_request: TextToSpeechReques
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/call-feedback")
+@limiter.limit("20/minute")
 async def call_feedback(request: Request, call_id: str = Query(...)):
     """Get feedback for a specific call."""
     try:
@@ -86,4 +98,8 @@ async def call_feedback(request: Request, call_id: str = Query(...)):
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "healthy"} 
+    return {"status": "healthy"}
+
+@app.get("/")
+def root():
+    return {"message": "API is running"} 
