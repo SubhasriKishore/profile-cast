@@ -13,17 +13,16 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/castingfit',
-        destination: '/castingfit',
-        permanent: true,
-      },
-      {
         source: '/Profiler',
-        destination: '/profiler',
+        destination: '/talentprofiler',
         permanent: true,
       },
     ];
   },
+  // Add trailing slash to prevent 404s
+  trailingSlash: true,
+  // Ensure proper page routing
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 }
 
 module.exports = nextConfig 
