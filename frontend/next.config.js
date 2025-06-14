@@ -3,16 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'vercel.app', 'vercel-production.up.railway.app'],
   },
   async redirects() {
     return [
-      {
-        source: '/TalentProfiler',
-        destination: '/talentprofiler',
-        permanent: true,
-      },
-      {
+    {
         source: '/Profiler',
         destination: '/talentprofiler',
         permanent: true,
@@ -23,6 +18,12 @@ const nextConfig = {
   trailingSlash: true,
   // Ensure proper page routing
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  // Enable static optimization
+  output: 'standalone',
+  // Enable compression
+  compress: true,
+  // Production source maps
+  productionBrowserSourceMaps: false,
 }
 
 module.exports = nextConfig 

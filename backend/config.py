@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from constants import LLM_CONFIG, PROXY_CONFIG, AUDIO_CONFIG, CASTINGFIT_CONFIG
+from constants import LLM_CONFIG, AUDIO_CONFIG, CASTINGFIT_CONFIG
 
 class Config:
     def __init__(self):
@@ -8,7 +8,6 @@ class Config:
         
         # Load configurations from constants
         self.llm_config = LLM_CONFIG
-        self.proxy_config = PROXY_CONFIG
         self.audio_config = AUDIO_CONFIG
         self.castingfit_config = CASTINGFIT_CONFIG
         

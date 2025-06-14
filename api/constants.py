@@ -13,11 +13,6 @@ LLM_CONFIG = {
     "task": "text-generation"
 }
 
-# Proxy Configuration
-PROXY_CONFIG = {
-    "base_url": "http://localhost:3040/v1"
-}
-
 # Audio Configuration
 AUDIO_CONFIG = {
     "sample_rate": 16000,

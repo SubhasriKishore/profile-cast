@@ -87,72 +87,48 @@ class ApiService {
     formData.append('requirements', requirements);
     formData.append('file', file);
 
-    try {
-      const response = await this.fetchWithTimeout(
-        `${API_BASE_URL}/parse-profile`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+    const response = await this.fetchWithTimeout(`${API_BASE_URL}/parse-profile`, {
+      method: 'POST',
+      body: formData,
+    });
 
-      if (!response.ok) {
-        throw new Error(`Failed to parse profile: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error parsing profile:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error('Failed to parse profile');
     }
+
+    return response.json();
   }
 
-  async speechToText(file: File): Promise<{ text: string }> {
+  async speechToText(audioFile: File): Promise<{ text: string }> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', audioFile);
 
-    try {
-      const response = await this.fetchWithTimeout(
-        `${API_BASE_URL}/speech-to-text`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+    const response = await this.fetchWithTimeout(`${API_BASE_URL}/speech-to-text`, {
+      method: 'POST',
+      body: formData,
+    });
 
-      if (!response.ok) {
-        throw new Error(`Failed to convert speech to text: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error converting speech to text:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error('Failed to convert speech to text');
     }
+
+    return response.json();
   }
 
   async textToSpeech(text: string): Promise<{ audio: string }> {
-    try {
-      const response = await this.fetchWithTimeout(
-        `${API_BASE_URL}/text-to-speech`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text }),
-        }
-      );
+    const response = await this.fetchWithTimeout(`${API_BASE_URL}/text-to-speech`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Failed to convert text to speech: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error converting text to speech:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error('Failed to convert text to speech');
     }
+
+    return response.json();
   }
 }
 

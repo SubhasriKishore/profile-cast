@@ -1,6 +1,7 @@
 """
 Constants for the backend application.
 """
+import os
 
 # LLM Configuration
 LLM_CONFIG = {
@@ -11,11 +12,6 @@ LLM_CONFIG = {
     "top_p": 0.95,
     "top_k": 50,
     "task": "text-generation"
-}
-
-# Proxy Configuration
-PROXY_CONFIG = {
-    "base_url": "http://localhost:3040/v1"
 }
 
 # Audio Configuration
@@ -32,7 +28,7 @@ CASTINGFIT_CONFIG = {
 
 # API Endpoints
 API_ENDPOINTS = {
-    "speech_to_text": "https://api.vapi.ai/v1/speech-to-text",
-    "text_to_speech": "https://api.vapi.ai/v1/text-to-speech",
-    "call_feedback": "https://api.vapi.ai/call"
+    "speech_to_text": os.getenv("VAPI_SPEECH_TO_TEXT_URL", "https://api.vapi.ai/v1/speech-to-text"),
+    "text_to_speech": os.getenv("VAPI_TEXT_TO_SPEECH_URL", "https://api.vapi.ai/v1/text-to-speech"),
+    "call_feedback": os.getenv("VAPI_CALL_FEEDBACK_URL", "https://api.vapi.ai/call")
 } 

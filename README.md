@@ -181,7 +181,7 @@ frontend/
 └── tailwind.config.ts
 ```
 
-## Setup and Running
+## Local Development Setup
 
 1. Clone the repository:
    ```bash
@@ -194,7 +194,6 @@ frontend/
    python3 -m venv venv
    source venv/bin/activate
    pip install -r backend/requirements.txt
-   playwright install
    ```
 
 3. Install frontend dependencies:
@@ -206,8 +205,17 @@ frontend/
 
 4. Set up environment variables:
    ```bash
-   export VAPI_API_KEY="your_vapi_key"
-   export TAVILY_API_KEY="your_tavily_key"
+   # Frontend (.env)
+   NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
+   NEXT_PUBLIC_VAPI_API_KEY=your_vapi_frontend_api_key
+
+   # Backend (.env)
+   OPENAI_API_KEY=your_openai_api_key
+   TAVILY_API_KEY=your_tavily_api_key
+   VAPI_BE_API_KEY=your_vapi_backend_api_key
+   VAPI_SPEECH_TO_TEXT_URL=https://api.vapi.ai/v1/speech-to-text
+   VAPI_TEXT_TO_SPEECH_URL=https://api.vapi.ai/v1/text-to-speech
+   VAPI_CALL_FEEDBACK_URL=https://api.vapi.ai/call
    ```
 
 5. Start all services:
@@ -220,13 +228,85 @@ frontend/
    - Backend API: [http://localhost:5000](http://localhost:5000)
    - API Documentation: [http://localhost:5000/docs](http://localhost:5000/docs)
 
+## Vercel Deployment
 
-## Environment Variables
-- `VAPI_API_KEY`, 'VAPI_BE_API_KEY': API key for VAPI speech services
-- `TAVILY_API_KEY`: API key for Tavily web search
-- `NODE_ENV`: Frontend environment (development/production)
-- `REACT_APP_API_URL`: Backend API URL
-- Additional LLM provider keys as needed
+### Prerequisites
+1. Vercel account
+2. GitHub repository connected to Vercel
+3. All required API keys and environment variables
+
+### Environment Variables Setup
+Set the following environment variables in your Vercel project settings:
+
+Frontend:
+```
+NEXT_PUBLIC_BACKEND_URL=https://your-project.vercel.app
+NEXT_PUBLIC_VAPI_API_KEY=your_vapi_frontend_api_key
+```
+
+Backend:
+```
+OPENAI_API_KEY=your_openai_api_key
+TAVILY_API_KEY=your_tavily_api_key
+VAPI_BE_API_KEY=your_vapi_backend_api_key
+VAPI_SPEECH_TO_TEXT_URL=https://api.vapi.ai/v1/speech-to-text
+VAPI_TEXT_TO_SPEECH_URL=https://api.vapi.ai/v1/text-to-speech
+VAPI_CALL_FEEDBACK_URL=https://api.vapi.ai/call
+```
+
+### Vercel Build Settings
+Configure the following in your Vercel project settings:
+
+1. Build Command:
+   ```bash
+   cd frontend && npm install && npm run build
+   ```
+
+2. Output Directory:
+   ```
+   frontend/.next
+   ```
+
+3. Install Command:
+   ```bash
+   cd frontend && npm install
+   ```
+
+### Deployment Checklist
+
+#### Pre-deployment
+- [ ] All environment variables set in Vercel
+- [ ] GitHub repository connected to Vercel
+- [ ] Build settings configured correctly
+- [ ] API keys and endpoints verified
+- [ ] Frontend configuration optimized for production
+- [ ] Backend API routes properly configured
+
+#### Post-deployment Verification
+- [ ] Frontend application accessible
+- [ ] API endpoints responding correctly
+- [ ] Environment variables loaded properly
+- [ ] Build logs checked for errors
+- [ ] CORS settings verified
+- [ ] API rate limiting configured
+- [ ] Error handling tested
+- [ ] Performance metrics monitored
+
+### Troubleshooting
+1. If frontend fails to build:
+   - Check Next.js configuration
+   - Verify all dependencies are installed
+   - Check for TypeScript errors
+
+2. If backend API fails:
+   - Verify Python version compatibility
+   - Check API routes configuration
+   - Verify environment variables
+
+3. If deployment fails:
+   - Check Vercel build logs
+   - Verify repository permissions
+   - Check for any missing dependencies
 
 ## Features in Development
 - Enhanced profile matching algorithms
