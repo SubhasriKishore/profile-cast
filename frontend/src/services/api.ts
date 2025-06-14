@@ -2,7 +2,7 @@
 
 // Use environment variable for backend URL, default to '/api', and always resolve as absolute path from current domain
 function getApiBaseUrl() {
-  let base = process.env.NEXT_PUBLIC_BACKEND_URL || '/api';
+  const base = process.env.NEXT_PUBLIC_BACKEND_URL || '/api';
   // If base is relative, prepend window.location.origin (browser) or '' (SSR fallback)
   if (base.startsWith('/')) {
     if (typeof window !== 'undefined' && window.location) {
