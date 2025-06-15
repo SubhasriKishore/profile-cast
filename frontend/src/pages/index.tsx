@@ -34,7 +34,7 @@ export default function Home() {
   };
 
   const handleProfilerClick = () => {
-    router.push('/profiler');
+    window.location.href = "https://684e0c79a93ae400085d4c31--effulgent-sunflower-d93b5f.netlify.app/";
   };
 
   return (

@@ -5,15 +5,6 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'vercel.app', 'vercel-production.up.railway.app'],
   },
-  async redirects() {
-    return [
-    {
-        source: '/Profiler',
-        destination: '/talentprofiler',
-        permanent: true,
-      },
-    ];
-  },
   // Add trailing slash to prevent 404s
   trailingSlash: true,
   // Ensure proper page routing
